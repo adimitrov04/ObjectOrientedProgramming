@@ -18,7 +18,7 @@ void makeValidFormat (Distance& invalid)
     const int INCHES_IN_FEET = 12;
 
     invalid.feet += (invalid.inches / INCHES_IN_FEET);
-    invalid.inches -= (invalid.inches - (invalid.inches % INCHES_IN_FEET));
+    invalid.inches -= invalid.inches % INCHES_IN_FEET;
 }
 
 Distance adds (Distance const& dist1, Distance const& dist2)
