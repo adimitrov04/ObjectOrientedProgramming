@@ -2,6 +2,8 @@
 
 using std::endl;
 
+const int TIME_UNIT = 60;
+
 struct TimePeriod
 {
     unsigned int hours, minutes, seconds;
@@ -19,7 +21,7 @@ void printLeadingZero (const unsigned int num)
     }
 }
 
-void printTime (TimePeriod& time)
+void printTime (const TimePeriod& time)
 {
     printLeadingZero(time.hours);
     std::cout << ':';
@@ -30,8 +32,6 @@ void printTime (TimePeriod& time)
 
 void convertToValidFormat (TimePeriod& time)
 {
-    const int TIME_UNIT = 60;
-
     if (time.seconds >= TIME_UNIT)
     {
         time.minutes += (time.seconds / TIME_UNIT);
@@ -45,12 +45,27 @@ void convertToValidFormat (TimePeriod& time)
     }
 }
 
+int convertToSeconds (const TimePeriod& time)
+{
+    int seconds = (time.hours * (TIME_UNIT * TIME_UNIT)) + (time.minutes * TIME_UNIT) + time.seconds;
+    return seconds;
+}
+
+TimePeriod convertToTime (const int seconds)
+{
+    TimePeriod time;
+
+    time.hours = 0;
+    time.minutes = (seconds / TIME_UNIT);
+    time.seconds = (seconds % TIME_UNIT);
+
+    return time;
+}
+
 int main ()
 {
-    TimePeriod lapTime = {0, 59, 78};
-
-    convertToValidFormat(lapTime);
-    printTime(lapTime);
+    TimePeriod time1 = {0, 59, 2};
+    TimePeriod time2 = {5, 44, 6};
 
     return 0;
 }

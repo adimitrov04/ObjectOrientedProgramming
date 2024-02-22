@@ -113,5 +113,8 @@ int main ()
 
     printStudentInfo(student);
 
+    delete[] student.firstName;
+    delete[] student.lastName;
+
     return 0;
 }
