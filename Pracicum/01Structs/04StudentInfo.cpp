@@ -1,15 +1,14 @@
 #include <iostream>
 #include <cstring>
+#include <new>
 
 using std::endl;
-
-const char EXIT_CODE[] = "exit";
 
 struct Student
 {
     char* firstName;
     char* lastName;
-    uint32_t facNumber;
+    unsigned int facNumber;
 };
 
 bool isBetween (const int num, const int lowerLim, const int upperLim)
@@ -17,58 +16,71 @@ bool isBetween (const int num, const int lowerLim, const int upperLim)
     return (num >= lowerLim && num <= upperLim);
 }
 
-void readStudentName (Student& student)
+int allocFail ()
 {
-    const int CHAR_LIMIT = 256;
-    char DEFAULT_LASTNAME[] = "?????";
-
-    std::cout << "Enter student's first and last name: ";
-    char firstName_buff[CHAR_LIMIT] = { 0, };
-    std::cin.getline(firstName_buff, CHAR_LIMIT, ' ');
-
-    student.firstName = new (std::nothrow) char[strlen(firstName_buff + 1)];
-    if (!student.firstName)
-        return ;
-
-    strcpy(firstName_buff, student.firstName);
-
-    std::cin.ignore();
-    char lastName_buff[CHAR_LIMIT] = { 0, };
-    std::cin.getline(lastName_buff, CHAR_LIMIT, ' ');
-    
-    student.lastName = new (std::nothrow) char[strlen(lastName_buff + 1)];
-    if (!student.lastName)
-    {
-        student.lastName = DEFAULT_LASTNAME;
-        return ;
-    }
-
-    strcpy(lastName_buff, student.lastName);
+    std::cerr << "Failed to allocate memory." << endl;
+    return -69;
 }
 
-bool readFacultyNumber(Student& student)
+bool validateName (const char* str)
 {
-    const int FAC_LENGTH = 8;
-    
-    char fn_buff[FAC_LENGTH] = { 0, };
-    std::cin.getline(fn_buff, FAC_LENGTH, ' ');
-
-    while (isBetween(atoi(fn_buff), 100000, 999999) == false)
+    while(*str)
     {
-        if (strcmp(fn_buff, EXIT_CODE) == 0)
+        if (isdigit(*str) || *str == ' ')
             return false;
 
-        std::cerr << "Invalid faculty number. Please try again or type 'exit' to exit: " << endl;
-        
-        std::cin.ignore();
-        std::cin.getline(fn_buff, FAC_LENGTH, ' ');
+        str++;
     }
 
-    student.facNumber = atoi(fn_buff);
     return true;
 }
 
-void printInfo (const Student& student)
+bool validateFacNum (const char* num)
+{
+    const int LIMS[] = {100000, 999999};
+
+    if (isBetween(atoi(num), LIMS[0], LIMS[1]) == false)
+        return false;
+
+    return true;
+}
+
+char* readName ()
+{
+    const int CHAR_LIMIT = 256;
+    char buffer[CHAR_LIMIT] = { 0, };
+
+    std::cin.getline(buffer, CHAR_LIMIT);
+    if (validateName(buffer))
+    {
+        char* pName = new (std::nothrow) char[strlen(buffer) + 1];
+        strcpy(pName, buffer);
+
+        return pName;
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
+unsigned int readFacNum ()
+{
+    const int FAC_LEN = 8;
+    char buffer[FAC_LEN] = { 0, };
+
+    std::cin.getline(buffer, FAC_LEN);
+    if (validateFacNum(buffer))
+    {
+        return atoi(buffer);
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+void printStudentInfo (const Student& student)
 {
     std::cout << "Student name: " << student.firstName << ' ' << student.lastName << endl;
     std::cout << "Faculty number: 0" << student.facNumber << endl;
@@ -78,20 +90,28 @@ int main ()
 {
     Student student;
 
-    readStudentName(student);
-    while (!student.firstName)
-    {
-        if (student.firstName == EXIT_CODE || student.lastName == EXIT_CODE)
-            return 0;
+    std::cout << "Enter student first name: ";
+    student.firstName = readName();
+    if (!student.firstName)
+        return allocFail();
 
-        std::cerr << "The given name is invalid. Please try again or type 'exit' to exit: " << endl;
-        readStudentName(student);
+    std::cout << "Enter student last name: ";
+    student.lastName = readName();
+    if (!student.lastName)
+    {
+        delete[] student.firstName;
+        return allocFail();
+    }
+    
+    std::cout << "Enter faculty number: ";
+    student.facNumber = readFacNum();
+    while (student.facNumber == 0)
+    {
+        std::cout << "Invalid fac. number. Try again: " << endl;
+        student.facNumber = readFacNum();
     }
 
-    if (readFacultyNumber(student) == false)
-        return 0;
-
-    printInfo(student);
+    printStudentInfo(student);
 
     return 0;
 }
