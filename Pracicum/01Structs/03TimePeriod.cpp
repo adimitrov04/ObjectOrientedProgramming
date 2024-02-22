@@ -62,10 +62,30 @@ TimePeriod convertToTime (const int seconds)
     return time;
 }
 
+TimePeriod findTimeDifference (const TimePeriod& time1, const TimePeriod& time2)
+{
+    int secs1 = convertToSeconds(time1);
+    int secs2 = convertToSeconds(time2);
+
+    int diffInSecs = std::abs(secs1 - secs2);
+    TimePeriod diff = convertToTime(diffInSecs);
+    convertToValidFormat(diff);
+
+    return diff;
+}
+
 int main ()
 {
-    TimePeriod time1 = {0, 59, 2};
-    TimePeriod time2 = {5, 44, 6};
+    TimePeriod time1 = {0, 76, 33};
+    convertToValidFormat(time1);
+    printTime(time1); std::cout << endl;
+
+    TimePeriod time2 = {1, 66, 0};
+    convertToValidFormat(time2);
+    printTime(time2); std::cout << endl;
+
+    TimePeriod diff = findTimeDifference(time1, time2);
+    printTime(diff); std::cout << endl;
 
     return 0;
 }
