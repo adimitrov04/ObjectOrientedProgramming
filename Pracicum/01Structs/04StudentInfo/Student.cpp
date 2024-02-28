@@ -1,6 +1,17 @@
 #include <iostream>
 #include "Student.h"
 
+static int clamp (const int v, const int lo, const int hi)
+{
+    if (v < lo)
+        return lo;
+
+    if (v > hi)
+        return hi;
+
+    return v;
+}
+
 void printStudentInfo (const Student& target)
 {
     std::cout << "Student name: " << target.firstName << ' ' << target.lastName << std::endl;
@@ -24,7 +35,7 @@ static bool validateFacNum (const char* numStr)
 {
     const int LIMS[] = {100000, 999999};
 
-    if (atoi(numStr) == std::clamp(atoi(numStr), LIMS[0], LIMS[1]))
+    if (atoi(numStr) != clamp(atoi(numStr), LIMS[0], LIMS[1]))
         return false;
 
     return true;
@@ -51,10 +62,20 @@ char* readName ()
 
 unsigned int readFacNum ()
 {
-    const int FAC_LEN = 8;
+    const int FAC_LEN = 8, STREAM_LEN = 500;
     char buffer[FAC_LEN] = { 0, };
 
     std::cin.getline(buffer, FAC_LEN);
+
+    while (std::cin.fail())
+    {
+        std::cin.clear();
+        std::cin.ignore(STREAM_LEN, '\n');
+
+        std::cout << "Invalid fac. number format.. Try again: " << std::endl;
+        std::cin.getline(buffer, FAC_LEN);
+    }
+
     if (validateFacNum(buffer))
     {
         return atoi(buffer);

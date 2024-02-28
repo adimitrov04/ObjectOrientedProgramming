@@ -30,12 +30,9 @@ int main ()
     
     std::cout << "Enter faculty number: ";
     student.facNumber = readFacNum();
-    while (student.facNumber == 0)
+    while (!student.facNumber)
     {
-        std::cout << "Invalid fac. number. Try again: " << endl;
-        
-        std::cin.clear();
-        std::cin.ignore(500,'\n');
+        std::cout << "Invalid fac. number.. try again:" << endl;
         student.facNumber = readFacNum();
     }
 
