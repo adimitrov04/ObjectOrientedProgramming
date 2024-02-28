@@ -6,7 +6,9 @@ const int TIME_UNIT = 60;
 
 struct TimePeriod
 {
-    unsigned int hours, minutes, seconds;
+    unsigned int hours;
+    unsigned int minutes;
+    unsigned int seconds;
 };
 
 void printLeadingZero (const unsigned int num)

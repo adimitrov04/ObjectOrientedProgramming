@@ -49,7 +49,6 @@ int main ()
     
     unsigned int numberOfStars = 0;
     input >> numberOfStars;
-    std::cout << numberOfStars << endl;;
 
     for (int i = 0; i < numberOfStars; i++)
     {
