@@ -108,6 +108,9 @@ int main ()
     while (student.facNumber == 0)
     {
         std::cout << "Invalid fac. number. Try again: " << endl;
+        
+        std::cin.clear();
+        std::cin.ignore(500,'\n');
         student.facNumber = readFacNum();
     }
 
