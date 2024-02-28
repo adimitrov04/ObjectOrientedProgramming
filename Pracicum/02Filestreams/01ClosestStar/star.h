@@ -11,7 +11,9 @@ struct Star
 
 Star readStar (std::istream& inp);
 
-void printStar (const Star& inStar, std::ostream& dest);
+float roundf (const float num, int places);
+
+void printStar (const Star& inStar, std::ostream& dest, const int precision);
 
 float findDistanceFromOrigin (const Star& star);
 

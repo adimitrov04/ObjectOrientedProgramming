@@ -7,6 +7,7 @@ using std::ifstream;
 using std::ofstream;
 
 const Star ORIGIN = {0.0f, 0.0f, 0.0f};
+const int GLOBAL_PRECISION = 2;
 
 Star findClosestStar (const Star* stars, const unsigned int numberOfStars)
 {
@@ -31,8 +32,8 @@ Star findClosestStar (const Star* stars, const unsigned int numberOfStars)
 void outputMessage (const Star& starToPrint, std::ostream& dest)
 {
     dest << "The closest star to us is located at (";
-    printStar(starToPrint, dest);
-    dest << ") that is " << findDistanceFromOrigin(starToPrint) << " light years away." << endl;
+    printStar(starToPrint, dest, GLOBAL_PRECISION);
+    dest << ") that is " << roundf(findDistanceFromOrigin(starToPrint), GLOBAL_PRECISION) << " light years away." << endl;
 }
 
 int main ()

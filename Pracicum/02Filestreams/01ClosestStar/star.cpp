@@ -10,9 +10,19 @@ Star readStar (std::istream& inp)
     return input;
 }
 
-void printStar (const Star& inStar, std::ostream& dest)
+float roundf (const float num, int places)
 {
-    dest << inStar.x << ", " << inStar.y << ", " << inStar.z;
+    int converter = 0;
+    float factor = (powf(10.0f, static_cast<float>(places)));
+    
+    converter = num * factor;
+
+    return static_cast<float>(converter / factor);
+}
+
+void printStar (const Star& inStar, std::ostream& dest, const int precision = 2)
+{
+    dest << roundf(inStar.x, precision) << ", " << roundf(inStar.y, precision) << ", " << roundf(inStar.z, precision);
 }
 
 float findDistanceFromOrigin (const Star& star)
