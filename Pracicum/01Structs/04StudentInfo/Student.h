@@ -19,4 +19,8 @@ char* readName ();
 
 unsigned int readFacNum ();
 
+void deleteStudentName (Student& target);
+
+void deleteStudents (Student* studentArr, const int size);
+
 #endif //__STUDENT_STRUCT__

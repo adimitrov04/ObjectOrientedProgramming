@@ -3,6 +3,8 @@
 #include <new>
 #include "Student.h"
 
+const Student NO_ALLOCATION = { "ALLOC", "FAIL", 0 };
+
 using std::endl;
 
 int allocFail ()
@@ -11,21 +13,21 @@ int allocFail ()
     return -69;
 }
 
-int main ()
+Student readStudentInfo ()
 {
     Student student;
 
     std::cout << "Enter student first name: ";
     student.firstName = readName();
     if (!student.firstName)
-        return allocFail();
+        return NO_ALLOCATION;
 
     std::cout << "Enter student last name: ";
     student.lastName = readName();
     if (!student.lastName)
     {
         delete[] student.firstName;
-        return allocFail();
+        return NO_ALLOCATION;
     }
     
     std::cout << "Enter faculty number: ";
@@ -36,10 +38,40 @@ int main ()
         student.facNumber = readFacNum();
     }
 
-    printStudentInfo(student);
+    return student;
+}
 
-    delete[] student.firstName;
-    delete[] student.lastName;
+int main ()
+{
+    int classSize = 0;
+    std::cin >> classSize;
+
+    Student* schClass = new (std::nothrow) Student[classSize];
+    if (!schClass)
+    {
+        return allocFail();
+    }
+
+    std::cin.ignore();
+    for (int i = 0; i < classSize; i++)
+    {
+        schClass[i] = readStudentInfo();
+        if (schClass[i].firstName == NO_ALLOCATION.firstName && schClass[i].lastName == NO_ALLOCATION.lastName)
+        {
+            deleteStudents(schClass, i);
+            return allocFail();
+        }
+        
+        std::cout << endl;
+    }
+
+    for (int i = 0; i < classSize; i++)
+    {
+        printStudentInfo(schClass[i]);
+        std::cout << endl;
+    }
+
+    deleteStudents(schClass, classSize);
 
     return 0;
 }

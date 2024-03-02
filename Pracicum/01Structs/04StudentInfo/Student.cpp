@@ -85,3 +85,19 @@ unsigned int readFacNum ()
         return 0;
     }
 }
+
+void deleteStudentName (Student& target)
+{
+    delete[] target.firstName;
+    delete[] target.lastName;
+}
+
+void deleteStudents (Student* studentArr, const int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        deleteStudentName(studentArr[i]);
+    }
+
+    delete[] studentArr;
+}
