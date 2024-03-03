@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <cmath>
 #include "star.h"
 
@@ -10,6 +11,7 @@ Star readStar (std::istream& inp)
     return input;
 }
 
+/*
 float roundf (const float num, int places)
 {
     int converter = 0;
@@ -19,10 +21,11 @@ float roundf (const float num, int places)
 
     return static_cast<float>(converter / factor);
 }
+*/
 
-void printStar (const Star& inStar, std::ostream& dest, const int precision = 2)
+void printStar (const Star& inStar, std::ostream& dest, const int precision = 3)
 {
-    dest << roundf(inStar.x, precision) << ", " << roundf(inStar.y, precision) << ", " << roundf(inStar.z, precision);
+    dest << std::setprecision(precision) << inStar.x << ", " << inStar.y << ", " << inStar.z;
 }
 
 float findDistanceFromOrigin (const Star& star)

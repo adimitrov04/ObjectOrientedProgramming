@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <iomanip>
 #include "star.h"
 
 using std::endl;
@@ -8,6 +9,7 @@ using std::ofstream;
 
 const Star ORIGIN = {0.0f, 0.0f, 0.0f};
 const int GLOBAL_PRECISION = 2;
+const int NO_OPEN = -257;
 
 Star findClosestStar (const Star* stars, const unsigned int numberOfStars)
 {
@@ -31,9 +33,10 @@ Star findClosestStar (const Star* stars, const unsigned int numberOfStars)
 
 void outputMessage (const Star& starToPrint, std::ostream& dest)
 {
+    dest << std::fixed;
     dest << "The closest star to us is located at (";
     printStar(starToPrint, dest, GLOBAL_PRECISION);
-    dest << ") that is " << roundf(findDistanceFromOrigin(starToPrint), GLOBAL_PRECISION) << " light years away." << endl;
+    dest << std::setprecision(GLOBAL_PRECISION) << ") that is " << findDistanceFromOrigin(starToPrint) << " light years away." << endl;
 }
 
 int main ()
@@ -45,8 +48,14 @@ int main ()
     char inputFileName[NAME_LEN] = { 0, };
     std::cin >> inputFileName;
 
+    // Read input from file
     std::ifstream input;
     input.open(inputFileName);
+    if (!input)
+    {
+        std::cerr << "Failed to open file for reading. Terminating..." << endl;
+        return NO_OPEN;
+    }
     
     unsigned int numberOfStars = 0;
     input >> numberOfStars;
@@ -58,6 +67,7 @@ int main ()
 
     input.close();
 
+    // Write output in file
     Star closest = findClosestStar(stars, numberOfStars);
     float smallestDist = findDistanceFromOrigin(closest);
 

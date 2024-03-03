@@ -11,7 +11,7 @@ struct Star
 
 Star readStar (std::istream& inp);
 
-float roundf (const float num, int places);
+// float roundf (const float num, int places);
 
 void printStar (const Star& inStar, std::ostream& dest, const int precision);
 
