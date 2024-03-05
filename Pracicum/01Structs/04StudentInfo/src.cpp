@@ -6,6 +6,7 @@
 const Student NO_ALLOCATION = { "ALLOC", "FAIL", 0 };
 const int STUDENT_NAME_LIMIT = 256;
 const int SUBJECT_NAME_LIMIT = 33;
+const int NUMBER_OF_GRADES = 3;
 
 using std::endl;
 
@@ -18,6 +19,9 @@ int allocFail ()
 Student readStudentInfo ()
 {
     Student student;
+
+    // Read names
+    std::cin.ignore();
 
     std::cout << "Enter student first name: ";
     student.firstName = readName(validateName, STUDENT_NAME_LIMIT);
@@ -34,12 +38,45 @@ Student readStudentInfo ()
         return NO_ALLOCATION;
     }
     
+    // Read faculty number
     std::cout << "Enter faculty number: ";
     student.facNumber = readFacNum();
     while (!student.facNumber)
     {
         std::cout << "Invalid fac. number.. try again:" << endl;
         student.facNumber = readFacNum();
+    }
+
+    // Read grades
+    std::cout << endl << "Enter " << NUMBER_OF_GRADES << " subjects and the student's grade for them: " << endl;
+    for (int i = 0; i < NUMBER_OF_GRADES; i++)
+    {
+        std::cout << "Subject #" << i + 1 << " name: ";
+        
+        std::cin.ignore();
+        student.gradeList[i].subject = readName(validateSubject, SUBJECT_NAME_LIMIT);
+        std::clog << "validation passed" << endl;
+        
+        if (!student.gradeList[i].subject)
+        {
+            std::clog << "in allocfail scenario" << endl;
+            deleteStudentName(student);
+            deleteGrades(student, i);
+
+            std::cerr << "Failed to allocate memory for grade name." << endl;
+            return NO_ALLOCATION;
+        }
+
+        std::clog << "memory allocated successfully" << endl;
+        
+        std::cout << "Grade: ";
+        std::cin >> student.gradeList[i].grade;
+        while (!validateGrade(student.gradeList[i].grade))
+        {
+            std::cout << "Invalid grade value. Enter grade between 2 and 6: ";
+            std::cin >> student.gradeList[i].grade;
+            std::cin.ignore();
+        }
     }
 
     return student;
@@ -69,13 +106,16 @@ int main ()
         std::cout << endl;
     }
 
+    float passingGrade = 0.0f;
+    std::cout << "Enter passing grade: ";
+    std::cin >> passingGrade;
+    std::cout << endl;
+
     for (int i = 0; i < classSize; i++)
     {
-        printStudentInfo(schClass[i]);
-        std::cout << endl;
+        printPassedExams(schClass[i], passingGrade);
     }
 
     deleteStudents(schClass, classSize);
-
     return 0;
 }

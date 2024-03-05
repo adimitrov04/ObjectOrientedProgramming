@@ -1,17 +1,32 @@
 #ifndef __STUDENT_STRUCT__
 #define __STUDENT_STRUCT__
 
+struct Grade
+{
+    char* subject;
+    float grade;
+};
+
 struct Student
 {
     char* firstName;
     char* lastName;
 
     int facNumber;
+    Grade* gradeList;
 };
 
 void printStudentInfo (const Student& target);
 
+void printGrade (const Grade& target);
+
+void printPassedExams (const Student& target, const float passingGrade);
+
 bool validateName (const char* name);
+
+bool validateSubject (const char* str);
+
+bool validateGrade (const float grade);
 
 /**
  * Read a cstring representing a name, with given validation criteria. (with exact length).
@@ -26,6 +41,8 @@ char* readName (bool (*validation)(const char*), const int buff_len);
 unsigned int readFacNum ();
 
 void deleteStudentName (Student& target);
+
+void deleteGrades (const Student& target, const int amount);
 
 void deleteStudents (Student* studentArr, const int size);
 
