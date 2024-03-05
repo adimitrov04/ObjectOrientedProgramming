@@ -4,6 +4,8 @@
 #include "Student.h"
 
 const Student NO_ALLOCATION = { "ALLOC", "FAIL", 0 };
+const int STUDENT_NAME_LIMIT = 256;
+const int SUBJECT_NAME_LIMIT = 33;
 
 using std::endl;
 
@@ -18,12 +20,14 @@ Student readStudentInfo ()
     Student student;
 
     std::cout << "Enter student first name: ";
-    student.firstName = readName();
+    student.firstName = readName(validateName, STUDENT_NAME_LIMIT);
     if (!student.firstName)
+    {
         return NO_ALLOCATION;
+    }
 
     std::cout << "Enter student last name: ";
-    student.lastName = readName();
+    student.lastName = readName(validateName, STUDENT_NAME_LIMIT);
     if (!student.lastName)
     {
         delete[] student.firstName;
@@ -56,7 +60,7 @@ int main ()
     for (int i = 0; i < classSize; i++)
     {
         schClass[i] = readStudentInfo();
-        if (schClass[i].firstName == NO_ALLOCATION.firstName && schClass[i].lastName == NO_ALLOCATION.lastName)
+        if (!strcmp(schClass[i].firstName, NO_ALLOCATION.firstName) && !strcmp(schClass[i].lastName, NO_ALLOCATION.lastName))
         {
             deleteStudents(schClass, i);
             return allocFail();

@@ -18,7 +18,7 @@ void printStudentInfo (const Student& target)
     std::cout << "Faculty number: 0" << target.facNumber << std::endl;
 }
 
-static bool validateName (const char* name)
+bool validateName (const char* name)
 {
     while(*name)
     {
@@ -41,23 +41,30 @@ static bool validateFacNum (const char* numStr)
     return true;
 }
 
-char* readName ()
+char* readName (bool (*validation)(const char*), const int buff_len)
 {
-    const int CHAR_LIMIT = 256;
-    char buffer[CHAR_LIMIT] = { 0, };
-
-    std::cin.getline(buffer, CHAR_LIMIT);
-    if (validateName(buffer))
-    {
-        char* pName = new (std::nothrow) char[strlen(buffer) + 1];
-        strcpy(pName, buffer);
-
-        return pName;
-    }
-    else
-    {
+    char* buffer = new (std::nothrow) char[buff_len];
+    if (!buffer)
         return nullptr;
+
+    std::cin.getline(buffer, buff_len);
+    while (!validation(buffer))
+    {
+        std::cerr << "Invalid name. Try again: ";
+        std::cin.clear();
+        std::cin.ignore(buff_len, '\n');
+
+        std::cin.getline(buffer, buff_len);
     }
+    
+    char* pName = new (std::nothrow) char[strlen(buffer) + 1];
+    if (!pName)
+        return nullptr;
+
+    strcpy(pName, buffer);
+
+    delete[] buffer;
+    return pName;
 }
 
 unsigned int readFacNum ()
