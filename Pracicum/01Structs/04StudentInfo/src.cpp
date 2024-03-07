@@ -21,8 +21,6 @@ Student readStudentInfo ()
     Student student;
 
     // Read names
-    std::cin.ignore();
-
     std::cout << "Enter student first name: ";
     student.firstName = readName(validateName, STUDENT_NAME_LIMIT);
     if (!student.firstName)
@@ -48,34 +46,21 @@ Student readStudentInfo ()
     }
 
     // Read grades
+    student.gradeList = new (std::nothrow) Grade[NUMBER_OF_GRADES];
+    if (!student.gradeList)
+    {
+        deleteStudentName(student);
+        return NO_ALLOCATION;
+    }
+
     std::cout << endl << "Enter " << NUMBER_OF_GRADES << " subjects and the student's grade for them: " << endl;
     for (int i = 0; i < NUMBER_OF_GRADES; i++)
     {
-        std::cout << "Subject #" << i + 1 << " name: ";
-        
-        std::cin.ignore();
-        student.gradeList[i].subject = readName(validateSubject, SUBJECT_NAME_LIMIT);
-        std::clog << "validation passed" << endl;
-        
-        if (!student.gradeList[i].subject)
+        if (!readGrade(student.gradeList[i], SUBJECT_NAME_LIMIT))
         {
-            std::clog << "in allocfail scenario" << endl;
             deleteStudentName(student);
             deleteGrades(student, i);
-
-            std::cerr << "Failed to allocate memory for grade name." << endl;
             return NO_ALLOCATION;
-        }
-
-        std::clog << "memory allocated successfully" << endl;
-        
-        std::cout << "Grade: ";
-        std::cin >> student.gradeList[i].grade;
-        while (!validateGrade(student.gradeList[i].grade))
-        {
-            std::cout << "Invalid grade value. Enter grade between 2 and 6: ";
-            std::cin >> student.gradeList[i].grade;
-            std::cin.ignore();
         }
     }
 

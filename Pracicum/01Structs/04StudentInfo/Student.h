@@ -40,6 +40,8 @@ char* readName (bool (*validation)(const char*), const int buff_len);
 
 unsigned int readFacNum ();
 
+bool readGrade (Grade& target, const int subjectNameLim);
+
 void deleteStudentName (Student& target);
 
 void deleteGrades (const Student& target, const int amount);

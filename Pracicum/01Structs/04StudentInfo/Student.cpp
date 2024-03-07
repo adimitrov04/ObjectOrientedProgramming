@@ -89,7 +89,7 @@ static bool v_subject (const char* str)
 
 bool validateSubject (const char* str)
 {
-    std::clog << "in fucntion v_subject" << std::endl;
+    //std::clog << "in fucntion v_subject" << std::endl;
     return v_subject(str);
 }
 
@@ -161,6 +161,32 @@ unsigned int readFacNum ()
     {
         return 0;
     }
+}
+
+bool readGrade (Grade& target, const int subjectNameLim)
+{
+    //std::cin.ignore();
+    std::cout << "Subject name: ";
+    target.subject = readName(validateSubject, subjectNameLim);
+    //std::clog << "validation passed" << endl;
+        
+    if (!target.subject)
+    {
+        std::cerr << "Failed to allocate memory for grade name." << std::endl;
+        return false;
+    }
+
+    //std::clog << "memory allocated successfully" << endl;
+    std::cout << "Grade: ";
+    std::cin >> target.grade;
+    while (!validateGrade(target.grade))
+    {
+        std::cout << "Invalid grade value. Enter grade between 2 and 6: ";
+        std::cin >> target.grade;
+    }
+    
+    std::cin.ignore();
+    return true;
 }
 
 // MEMORY DELETION FUNCTIONS
