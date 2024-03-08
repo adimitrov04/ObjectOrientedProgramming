@@ -89,7 +89,6 @@ static bool v_subject (const char* str)
 
 bool validateSubject (const char* str)
 {
-    //std::clog << "in fucntion v_subject" << std::endl;
     return v_subject(str);
 }
 
@@ -129,11 +128,18 @@ char* readName (bool (*validation)(const char*), const int buff_len)
     
     char* pName = new (std::nothrow) char[strlen(buffer) + 1];
     if (!pName)
+    {
+        delete[] buffer;
+        buffer = nullptr;
+
         return nullptr;
+    }
 
     strcpy(pName, buffer);
 
     delete[] buffer;
+    buffer = nullptr;
+
     return pName;
 }
 
@@ -194,7 +200,10 @@ bool readGrade (Grade& target, const int subjectNameLim)
 void deleteStudentName (Student& target)
 {
     delete[] target.firstName;
+    target.firstName = nullptr;
+    
     delete[] target.lastName;
+    target.lastName = nullptr;
 }
 
 void deleteGrades (const Student& target, const int amount)
@@ -202,6 +211,7 @@ void deleteGrades (const Student& target, const int amount)
     for (int i = 0; i < amount; i++)
     {
         delete[] target.gradeList[i].subject;
+        target.gradeList[i].subject = nullptr;
     }
 }
 
@@ -214,4 +224,5 @@ void deleteStudents (Student* studentArr, const int size)
     }
 
     delete[] studentArr;
+    studentArr = nullptr;
 }
