@@ -3,7 +3,8 @@
 #include <new>
 #include "Student.h"
 
-const Student NO_ALLOCATION = { "ALLOC", "FAIL", 0 };
+const Student NO_ALLOCATION = { nullptr, nullptr, 0 };
+
 const int STUDENT_NAME_LIMIT = 256;
 const int SUBJECT_NAME_LIMIT = 33;
 const int NUMBER_OF_GRADES = 3;
@@ -82,12 +83,11 @@ int main ()
     for (int i = 0; i < classSize; i++)
     {
         schClass[i] = readStudentInfo();
-        if (!strcmp(schClass[i].firstName, NO_ALLOCATION.firstName) && !strcmp(schClass[i].lastName, NO_ALLOCATION.lastName))
+        if (!schClass[i].firstName && !schClass[i].lastName)
         {
             deleteStudents(schClass, i);
             return allocFail();
         }
-        
         std::cout << endl;
     }
 
@@ -100,6 +100,7 @@ int main ()
     {
         printPassedExams(schClass[i], passingGrade);
     }
+    std::cout << endl;
 
     deleteStudents(schClass, classSize);
     return 0;
