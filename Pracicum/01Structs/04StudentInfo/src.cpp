@@ -3,8 +3,6 @@
 #include <new>
 #include "Student.h"
 
-const Student NO_ALLOCATION = { nullptr, nullptr, 0 };
-
 const int STUDENT_NAME_LIMIT = 256;
 const int SUBJECT_NAME_LIMIT = 33;
 const int NUMBER_OF_GRADES = 3;
@@ -26,7 +24,7 @@ Student readStudentInfo ()
     student.firstName = readName(validateName, STUDENT_NAME_LIMIT);
     if (!student.firstName)
     {
-        return NO_ALLOCATION;
+        return Student{};
     }
 
     std::cout << "Enter student last name: ";
@@ -34,7 +32,7 @@ Student readStudentInfo ()
     if (!student.lastName)
     {
         delete[] student.firstName;
-        return NO_ALLOCATION;
+        return Student{};
     }
     
     // Read faculty number
@@ -51,7 +49,7 @@ Student readStudentInfo ()
     if (!student.gradeList)
     {
         deleteStudentName(student);
-        return NO_ALLOCATION;
+        return Student{};
     }
 
     std::cout << endl << "Enter " << NUMBER_OF_GRADES << " subjects and the student's grade for them: " << endl;
@@ -61,7 +59,7 @@ Student readStudentInfo ()
         {
             deleteStudentName(student);
             deleteGrades(student, i);
-            return NO_ALLOCATION;
+            return Student{};
         }
     }
 

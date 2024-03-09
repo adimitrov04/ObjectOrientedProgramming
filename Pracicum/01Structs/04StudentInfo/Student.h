@@ -9,11 +9,11 @@ struct Grade
 
 struct Student
 {
-    char* firstName;
-    char* lastName;
-
-    int facNumber;
-    Grade* gradeList;
+    char* firstName = nullptr;
+    char* lastName = nullptr;
+    int facNumber = 0;
+    
+    Grade* gradeList = nullptr;
 };
 
 void printStudentInfo (const Student& target);
