@@ -8,6 +8,19 @@ Beer::Beer()
     this->fVolume = 0;
 }
 
+Beer::Beer (const char* brand, const int volume = 0)
+{
+    
+    this->SetName(brand);
+    if (strlen(this->fBrand) == 0)
+    {
+        std::clog << "Initialization of object failed." << std::endl;
+        return ;
+    }
+
+    this->SetVolume(volume);
+}
+
 void Beer::nullifyString (char* const str, const size_t buff_len)
 {
     for (int i = 0; i < buff_len; i++)
@@ -19,6 +32,22 @@ void Beer::nullifyString (char* const str, const size_t buff_len)
 int Beer::GetVolume () const
 {
     return this->fVolume;
+}
+
+const char* Beer::GetName () const
+{
+    if (strnlen(this->fBrand, BRAND_NAME_LIMIT) == 0)
+        return nullptr;
+
+    return this->fBrand;
+}
+
+bool Beer::IsGood () const
+{
+    if (strlen(this->fBrand) == 0 || strnlen(this->fBrand, BRAND_NAME_LIMIT) == BRAND_NAME_LIMIT)
+        return false;
+
+    return true;
 }
 
 void Beer::SetName (const char* buffer)
@@ -57,17 +86,27 @@ void Beer::RemoveVolume (const int inVolume)
 
 void Beer::AddFrom (Beer& source, const int inVolume)
 {
+    if (this->IsGood() == false)
+    {
+        std::cout << "ERROR: Cannot add volume because current object is not initialized." << std::endl;
+        return ;
+    }
+    
     if (source.GetVolume() >= inVolume)
     {
+        if (this->IsGood() == false)
+        {
+            std::clog << "FAIL: Specified soruce is not in good state." << std::endl;
+            return ;
+        }
         this->fVolume += inVolume;
         source.RemoveVolume(inVolume);
     }
     else
     {
-        std::cout << "FAIL: Specified source does not have the specified volume for transfer." << std::endl;
+        std::clog << "FAIL: Specified source does not have the specified volume for transfer." << std::endl;
+        return ;
     }
-
-    return ;
 }
 
 void Beer::Print (const char* volumeUnit) const
@@ -116,6 +155,8 @@ void Beer::ReadName (std::istream& inputSrc)
     }
 
     this->SetName(buff);
+
+    inputSrc.clear();
     std::clog << "SetName() completed successfully." << std::endl;
 }
 
@@ -130,6 +171,7 @@ void Beer::ReadVolume (std::istream& inputSrc)
         std::clog << buffer << std::endl;
         std::cout << "FAIL: Incorrect volume format." << std::endl;
         inputSrc.ignore();
+        nullifyString(this->fBrand, BRAND_NAME_LIMIT);
         return ;
     }
 

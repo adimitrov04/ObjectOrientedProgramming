@@ -10,10 +10,13 @@ class Beer
 {
 public:
     Beer();
+    Beer(const char* brand, const int volume);
 
     void Read (std::istream& inputSrc = std::cin);
 
     int GetVolume () const;
+    const char* GetName () const;
+    bool IsGood () const;
     
     void SetName (const char* buffer);
     void SetVolume (const int volume);
