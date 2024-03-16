@@ -10,7 +10,8 @@ Beer::Beer()
 
 Beer::Beer (const char* brand, const int volume = 0)
 {
-    
+    nullifyString(this->fBrand, BRAND_NAME_LIMIT);
+
     this->SetName(brand);
     if (strlen(this->fBrand) == 0)
     {
@@ -27,6 +28,20 @@ void Beer::nullifyString (char* const str, const size_t buff_len)
     {
         str[i] = '\0';
     }
+}
+
+bool Beer::nameIsValid (const char* const name) const
+{
+    const char* iterator = name;
+    while (*iterator && iterator != nullptr)
+    {
+        if (ispunct(*iterator))
+            return false;
+
+        iterator++;
+    }
+
+    return true;
 }
 
 int Beer::GetVolume () const
@@ -55,6 +70,12 @@ void Beer::SetName (const char* buffer)
     if (strnlen(buffer, BRAND_NAME_LIMIT) == BRAND_NAME_LIMIT)
     {
         std::cout << "FAIL: Brand name longer than set limit." << std::endl;
+        return ;
+    }
+
+    if (nameIsValid(buffer) == false)
+    {
+        std::clog << "SetName() failed due to invalid name format." << std::endl;
         return ;
     }
 
@@ -92,21 +113,20 @@ void Beer::AddFrom (Beer& source, const int inVolume)
         return ;
     }
     
-    if (source.GetVolume() >= inVolume)
+    if (source.IsGood() == false)
     {
-        if (this->IsGood() == false)
-        {
-            std::clog << "FAIL: Specified soruce is not in good state." << std::endl;
-            return ;
-        }
-        this->fVolume += inVolume;
-        source.RemoveVolume(inVolume);
+        std::clog << "FAIL: Specified soruce is not in good state." << std::endl;
+        return ;
     }
-    else
+
+    if (source.GetVolume() < inVolume)
     {
         std::clog << "FAIL: Specified source does not have the specified volume for transfer." << std::endl;
         return ;
     }
+    
+    this->fVolume += inVolume;
+    source.RemoveVolume(inVolume);
 }
 
 void Beer::Print (const char* volumeUnit) const

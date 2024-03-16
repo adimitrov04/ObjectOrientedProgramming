@@ -33,6 +33,7 @@ private:
     void ReadVolume (std::istream& inputSrc = std::cin);
 
     void nullifyString (char* const str, const size_t buff_len);
+    bool nameIsValid (const char* name) const;
 };
 
 #endif // __BEER_CLASS__
