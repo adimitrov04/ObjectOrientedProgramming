@@ -5,6 +5,7 @@
 
 const int BRAND_NAME_LIMIT = 128;
 const char DEFAULT_VOL_UNIT[] = "ml";
+const char COMBINE_SYMBOL = '&';
 
 class Beer
 {
@@ -17,6 +18,7 @@ public:
     int GetVolume () const;
     const char* GetName () const;
     bool IsGood () const;
+    bool HasMix (const char* const mix) const;
     
     void SetName (const char* buffer);
     void SetVolume (const int volume);
@@ -34,6 +36,9 @@ private:
 
     void nullifyString (char* const str, const size_t buff_len);
     bool nameIsValid (const char* name) const;
+
+    bool stringHas (const char* mainStr, const char* subStr) const;
+    bool addName (const char* toAdd);
 };
 
 #endif // __BEER_CLASS__

@@ -9,6 +9,7 @@ Beer::Beer()
 }
 
 Beer::Beer (const char* brand, const int volume = 0)
+: Beer()
 {
     nullifyString(this->fBrand, BRAND_NAME_LIMIT);
 
@@ -30,12 +31,43 @@ void Beer::nullifyString (char* const str, const size_t buff_len)
     }
 }
 
+bool Beer::stringHas (const char* mainStr, const char* subStr) const
+{
+    while (*subStr)
+    {
+        if (*mainStr != *subStr)
+            return false;
+
+        mainStr++;
+        subStr++;
+    }
+
+    return true;
+}
+
+bool Beer::addName (const char* toAdd)
+{
+    char* buffer[BRAND_NAME_LIMIT] = { 0, };
+
+    // Checks if there is space for both the '&' and '\0' symbols
+    if (strlen(this->GetName()) + strnlen(toAdd, BRAND_NAME_LIMIT) + 2 > BRAND_NAME_LIMIT)
+    {
+        std::clog << "addName() failed: combined name is too long." << std::endl;
+        return false;
+    }
+
+    strcat(this->fBrand, "&");
+    strcat(this->fBrand, toAdd);
+
+    return true;
+}
+
 bool Beer::nameIsValid (const char* const name) const
 {
     const char* iterator = name;
     while (*iterator && iterator != nullptr)
     {
-        if (ispunct(*iterator))
+        if (ispunct(*iterator) && (*iterator) != '&')
             return false;
 
         iterator++;
@@ -63,6 +95,26 @@ bool Beer::IsGood () const
         return false;
 
     return true;
+}
+
+bool Beer::HasMix (const char* mix) const
+{
+    const char* nameIterator = this->fBrand;
+    while (*nameIterator)
+    {
+        if (*nameIterator == '&')
+        {
+            std::clog << "& found in" << this->GetName();
+
+            nameIterator++;
+            if (stringHas(nameIterator, mix))
+                return true;
+        }
+
+        nameIterator++;
+    }
+
+    return false;
 }
 
 void Beer::SetName (const char* buffer)
@@ -122,6 +174,12 @@ void Beer::AddFrom (Beer& source, const int inVolume)
     if (source.GetVolume() < inVolume)
     {
         std::clog << "FAIL: Specified source does not have the specified volume for transfer." << std::endl;
+        return ;
+    }
+
+    if (this->addName(source.GetName()) == false)
+    {
+        std::cout << "FAIL: Could not concatenate names." << std::endl;
         return ;
     }
     
