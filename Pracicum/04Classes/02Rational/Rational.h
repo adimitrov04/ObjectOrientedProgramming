@@ -11,11 +11,16 @@ public:
     Rational (const int num);
     Rational (const int num, const int denom);
     Rational (const Rational& other);
-    ~Rational ();
+    //~Rational ();
 
     // Overloaded operators
     Rational& operator=(const Rational& other);
     bool operator==(const Rational& other);
+    
+    Rational operator+(const Rational& other);
+    Rational operator-(const Rational& other);
+    Rational operator*(const Rational& other);
+    Rational operator/(const Rational& other);
 
     // Getters
     const int GetDenominator () const;

@@ -42,11 +42,6 @@ Rational::Rational (const Rational& other)
     this->denominator = other.denominator;
 }
 
-Rational::~Rational ()
-{
-
-}
-
 Rational& Rational::operator=(const Rational& other)
 {
     if (this != &other)
@@ -63,6 +58,38 @@ Rational& Rational::operator=(const Rational& other)
 bool Rational::operator==(const Rational& other)
 {
     return this->IsEqual(other);
+}
+
+Rational Rational::operator+(const Rational& other)
+{
+    Rational result(*this);
+    result.Sum(other);
+
+    return result;
+}
+
+Rational Rational::operator-(const Rational& other)
+{
+    Rational result(*this);
+    result.Subtract(other);
+
+    return result;
+}
+
+Rational Rational::operator*(const Rational& other)
+{
+    Rational result(*this);
+    result.Multiply(other);
+
+    return result;
+}
+
+Rational Rational::operator/(const Rational& other)
+{
+    Rational result(*this);
+    result.Divide(other);
+
+    return result;
 }
 
 void Rational::clear ()
@@ -118,6 +145,18 @@ void Rational::Subtract (const int num)
 
 void Rational::Multiply (Rational operand)
 {
+    if (this->GetDenominator() == operand.GetNumerator())
+    {
+        this->denominator = operand.GetDenominator();
+        return;
+    }
+
+    if (this->GetNumerator() == operand.GetDenominator())
+    {
+        this->numerator = operand.GetNumerator();
+        return ;
+    }
+
     this->denominator *= operand.GetDenominator();
     this->numerator *= operand.GetNumerator();
 }
@@ -201,14 +240,15 @@ void Rational::Print (std::ostream& dest) const
 }
 
 int Rational::findGCF (const int other) const
-{
-    for (int i = 2; i <= std::min(this->GetDenominator(), other); i++)
+{   
+    int i = 0;
+    for (i = std::min(std::abs(this->GetDenominator()), std::abs(other)); i > 1; i--)
     {
-        if (this->GetDenominator() % i == 0 && other % i == 0)
-            return i;
+        if ((this->GetDenominator() % i == 0) && (other % i == 0))
+            break;
     }
 
-    return 1;
+    return i;
 }
 
 int Rational::findLCM (const Rational& other) const
