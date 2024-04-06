@@ -62,34 +62,22 @@ bool Rational::operator==(const Rational& other)
 
 Rational Rational::operator+(const Rational& other)
 {
-    Rational result(*this);
-    result.Sum(other);
-
-    return result;
+    return this->Sum(other);
 }
 
 Rational Rational::operator-(const Rational& other)
 {
-    Rational result(*this);
-    result.Subtract(other);
-
-    return result;
+    return this->Subtract(other);
 }
 
 Rational Rational::operator*(const Rational& other)
 {
-    Rational result(*this);
-    result.Multiply(other);
-
-    return result;
+    return this->Multiply(other);
 }
 
 Rational Rational::operator/(const Rational& other)
 {
-    Rational result(*this);
-    result.Divide(other);
-
-    return result;
+    return this->Divide(other);
 }
 
 void Rational::clear ()
@@ -108,82 +96,69 @@ const int Rational::GetNumerator () const
     return this->numerator;
 }
 
-void Rational::Sum (Rational operand)
+Rational Rational::Sum (Rational operand) const
 {
-    if (this->GetDenominator() != operand.GetDenominator())
+    Rational result(*this);
+
+    if (result.GetDenominator() != operand.GetDenominator())
     {
-        const int LARGEST_COMMON_MULTIPLE = this->findLCM(operand);
+        const int LEAST_COMMON_MULTIPLE = result.findLCM(operand);
         
-        const Rational MULTIPLY_THIS(LARGEST_COMMON_MULTIPLE / this->denominator, LARGEST_COMMON_MULTIPLE / this->denominator);
-        const Rational MULTIPLY_OTHER(LARGEST_COMMON_MULTIPLE / operand.GetDenominator(), LARGEST_COMMON_MULTIPLE / operand.GetDenominator());
+        const Rational MULTIPLY_THIS(LEAST_COMMON_MULTIPLE / result.GetDenominator(), LEAST_COMMON_MULTIPLE / result.GetDenominator());
+        const Rational MULTIPLY_OTHER(LEAST_COMMON_MULTIPLE / operand.GetDenominator(), LEAST_COMMON_MULTIPLE / operand.GetDenominator());
 
-        this->Multiply(MULTIPLY_THIS);
-        operand.Multiply(MULTIPLY_OTHER);
-        
-        this->numerator += operand.GetNumerator();
+        result = result.Multiply(MULTIPLY_THIS);
+        operand = operand.Multiply(MULTIPLY_OTHER);
     }
 
+    result.numerator += operand.GetNumerator();
+    return result;
 }
 
-void Rational::Sum (const int num)
+Rational Rational::Sum (const int num) const
 {
     Rational operand(num);
-    this->Sum(operand);
+    return this->Sum(operand);
 }
 
-void Rational::Subtract (Rational operand)
+Rational Rational::Subtract (Rational operand) const
 {
-    operand.Multiply(MINUS_ONE);
-    this->Sum(operand);
+    operand = operand.Multiply(MINUS_ONE);
+    return this->Sum(operand);
 }
 
-void Rational::Subtract (const int num)
-{
-    Rational operand(num);
-    this->Subtract(operand);
-}
-
-void Rational::Multiply (Rational operand)
-{
-    if (this->GetDenominator() == operand.GetNumerator())
-    {
-        this->denominator = operand.GetDenominator();
-        return;
-    }
-
-    if (this->GetNumerator() == operand.GetDenominator())
-    {
-        this->numerator = operand.GetNumerator();
-        return ;
-    }
-
-    this->denominator *= operand.GetDenominator();
-    this->numerator *= operand.GetNumerator();
-}
-
-void Rational::Multiply (const int num)
+Rational Rational::Subtract (const int num) const
 {
     Rational operand(num);
-    this->Multiply(operand);
+    return this->Subtract(operand);
 }
 
-void Rational::Divide (Rational operand)
+Rational Rational::Multiply (const Rational& operand) const
 {
-    try
-    {
-        Rational opReciprocal(operand.GetDenominator(), operand.GetNumerator());
-        this->Multiply(opReciprocal);
-    }
-    catch (const char* exc)
-    {
-        std::cout << exc << std::endl;
-    }
+    Rational result(*this);
+
+    result.numerator *= operand.GetNumerator();
+    result.denominator *= operand.GetDenominator();
+
+    return result;
 }
 
-void Rational::Divide (const int num)
+Rational Rational::Multiply (const int num) const
 {
     Rational operand(num);
-    this->Divide(operand);
+    return this->Multiply(operand);
+}
+
+Rational Rational::Divide (const Rational& operand) const
+{
+    Rational opReciprocal(operand.GetDenominator(), operand.GetNumerator());
+    return this->Multiply(opReciprocal);
+}
+
+Rational Rational::Divide (const int num) const
+{
+    Rational operand(num);
+    return this->Divide(operand);
 }
 
 void Rational::Simplify ()

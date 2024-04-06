@@ -27,17 +27,17 @@ public:
     const int GetNumerator () const;
 
     // Modifiers
-    void Sum (Rational operand);
-    void Sum (const int num);
+    Rational Sum (Rational operand) const;
+    Rational Sum (const int num) const;
 
-    void Subtract (Rational operand);
-    void Subtract (const int num);
+    Rational Subtract (Rational operand) const;
+    Rational Subtract (const int num) const;
     
-    void Multiply (Rational operand);
-    void Multiply (const int num);
+    Rational Multiply (const Rational& operand) const;
+    Rational Multiply (const int num) const;
     
-    void Divide (Rational operand);
-    void Divide (const int num);
+    Rational Divide (const Rational& operand) const;
+    Rational Divide (const int num) const;
     
     void Simplify ();
 
