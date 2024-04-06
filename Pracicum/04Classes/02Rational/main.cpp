@@ -1,4 +1,5 @@
 #include <iostream>
+#include <exception>
 #include "Rational.h"
 
 using std::endl;

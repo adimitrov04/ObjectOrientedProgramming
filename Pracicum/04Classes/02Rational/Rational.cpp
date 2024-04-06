@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <exception>
 #include "Rational.h"
 
 const Rational MINUS_ONE(-1, 1);
@@ -20,7 +21,7 @@ Rational::Rational (const int num, const int denom)
 : Rational()
 {
     if (denom == 0)
-        throw "ZeroDenominatorException";
+        throw std::logic_error("ZeroDenominatorException");
 
     this->numerator = num;
     this->denominator = denom;
