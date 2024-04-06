@@ -49,7 +49,7 @@ private:
     int numerator;
     int denominator;
 
-    void clear ();
+    void copy (const Rational& other);
     int findGCF (const int other) const;
     int findLCM (const Rational& other) const;
     bool IsEqual (Rational comparee) const;

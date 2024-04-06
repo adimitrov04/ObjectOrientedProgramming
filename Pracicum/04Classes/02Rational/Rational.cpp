@@ -35,21 +35,23 @@ Rational::Rational (const int num, const int denom)
 Rational::Rational (const Rational& other)
 : Rational()
 {
-    if (other.GetDenominator() == 0)
-        throw "ZeroDenominatorException";
+    this->copy(other);
+}
 
-    this->numerator = other.numerator;
-    this->denominator = other.denominator;
+void Rational::copy (const Rational& other)
+{
+    this->numerator = other.GetNumerator();
+    this->denominator = other.GetDenominator();
 }
 
 Rational& Rational::operator=(const Rational& other)
 {
     if (this != &other)
     {
-        this->clear();
+        const Rational empty;
 
-        this->numerator = other.GetNumerator();
-        this->denominator = other.GetDenominator();
+        this->copy(empty);
+        this->copy(other);
     }
 
     return *this;
@@ -78,12 +80,6 @@ Rational Rational::operator*(const Rational& other)
 Rational Rational::operator/(const Rational& other)
 {
     return this->Divide(other);
-}
-
-void Rational::clear ()
-{
-    this->numerator = 0;
-    this->denominator = 1;
 }
 
 const int Rational::GetDenominator () const
