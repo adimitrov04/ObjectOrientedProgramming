@@ -38,7 +38,7 @@ private:
     bool nameIsValid (const char* name) const;
 
     bool stringHas (const char* mainStr, const char* subStr) const;
-    bool addName (const char* toAdd);
+    void addName (const char* toAdd);
 };
 
 #endif // __BEER_CLASS__

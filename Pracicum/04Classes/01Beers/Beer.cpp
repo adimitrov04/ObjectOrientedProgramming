@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstring>
+#include <exception>
 #include "Beer.h"
 
 Beer::Beer()
@@ -11,14 +12,9 @@ Beer::Beer()
 Beer::Beer (const char* brand, const int volume = 0)
 : Beer()
 {
-    nullifyString(this->fBrand, BRAND_NAME_LIMIT);
-
     this->SetName(brand);
     if (strlen(this->fBrand) == 0)
-    {
-        std::clog << "Initialization of object failed." << std::endl;
-        return ;
-    }
+        throw std::invalid_argument("InvalidBrandName");
 
     this->SetVolume(volume);
 }
@@ -45,21 +41,16 @@ bool Beer::stringHas (const char* mainStr, const char* subStr) const
     return true;
 }
 
-bool Beer::addName (const char* toAdd)
+void Beer::addName (const char* toAdd)
 {
-    char* buffer[BRAND_NAME_LIMIT] = { 0, };
+    char buffer[BRAND_NAME_LIMIT] = { '\0', };
 
     // Checks if there is space for both the '&' and '\0' symbols
     if (strlen(this->GetName()) + strnlen(toAdd, BRAND_NAME_LIMIT) + 2 > BRAND_NAME_LIMIT)
-    {
-        std::clog << "addName() failed: combined name is too long." << std::endl;
-        return false;
-    }
+        throw std::invalid_argument("LengthLimitExceeded");
 
     strcat(this->fBrand, "&");
     strcat(this->fBrand, toAdd);
-
-    return true;
 }
 
 bool Beer::nameIsValid (const char* const name) const
@@ -104,7 +95,7 @@ bool Beer::HasMix (const char* mix) const
     {
         if (*nameIterator == '&')
         {
-            std::clog << "& found in" << this->GetName();
+            //std::clog << "& found in" << this->GetName();
 
             nameIterator++;
             if (stringHas(nameIterator, mix))
@@ -120,16 +111,10 @@ bool Beer::HasMix (const char* mix) const
 void Beer::SetName (const char* buffer)
 {
     if (strnlen(buffer, BRAND_NAME_LIMIT) == BRAND_NAME_LIMIT)
-    {
-        std::cout << "FAIL: Brand name longer than set limit." << std::endl;
-        return ;
-    }
+        throw std::invalid_argument("LengthLimitExceeded");
 
     if (nameIsValid(buffer) == false)
-    {
-        std::clog << "SetName() failed due to invalid name format." << std::endl;
-        return ;
-    }
+        throw std::invalid_argument("InvalidNameArgument");
 
     nullifyString(this->fBrand, BRAND_NAME_LIMIT);
     strcpy(this->fBrand, buffer);
@@ -137,52 +122,32 @@ void Beer::SetName (const char* buffer)
 
 void Beer::SetVolume (const int volume)
 {
-    if (this->fVolume == 0)
-    {
-        this->fVolume = volume;
-    }
-    else
-    {
-        std::clog << "Cannot use SetVolume() on non-empty object." << std::endl;
-    }
+    if (this->fVolume > 0)
+        throw std::logic_error("VolumeAlreadySet");
 
-    return ;
+    this->fVolume = volume;
 }
 
 void Beer::RemoveVolume (const int inVolume)
 {
-    if (this->fVolume >= inVolume)
-    {
-        this->fVolume -= inVolume;
-    }
+    if (this->fVolume < inVolume)
+        throw std::invalid_argument("NotEnoughVolumeInObject");
+    
+    this->fVolume -= inVolume;
 }
 
 void Beer::AddFrom (Beer& source, const int inVolume)
 {
     if (this->IsGood() == false)
-    {
-        std::cout << "ERROR: Cannot add volume because current object is not initialized." << std::endl;
-        return ;
-    }
+        throw std::invalid_argument("ObjectNotInGoodState");
     
     if (source.IsGood() == false)
-    {
-        std::clog << "FAIL: Specified soruce is not in good state." << std::endl;
-        return ;
-    }
+        throw std::invalid_argument("ArgumentNotInGoodState");
 
     if (source.GetVolume() < inVolume)
-    {
-        std::clog << "FAIL: Specified source does not have the specified volume for transfer." << std::endl;
-        return ;
-    }
+        throw std::invalid_argument("NotEnoughVolumeInObject");
 
-    if (this->addName(source.GetName()) == false)
-    {
-        std::cout << "FAIL: Could not concatenate names." << std::endl;
-        return ;
-    }
-    
+    this->addName(source.GetName());
     this->fVolume += inVolume;
     source.RemoveVolume(inVolume);
 }
