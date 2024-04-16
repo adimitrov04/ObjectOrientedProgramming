@@ -10,13 +10,14 @@ class Student : public Person
 {
 
 public:
-    Student (const std::string name, const int age);
+    Student (const std::string name, const uint16_t age);
 
 public:
     void Print (std::ostream& out = std::cout) const;
 
 private:
-    int fFacNum;
+    uint64_t fFacNum;
+    std::string fSpecialty;
     std::vector<Subject> subjects;
 
 };

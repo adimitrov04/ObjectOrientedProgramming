@@ -10,7 +10,7 @@ class Teacher : public Person
 {
 
 public:
-    Teacher (const std::string name, const int age, const Subject& subject);
+    Teacher (const std::string name, const uint16_t age, const Subject& subject);
 
     void Teach (Student& student);
     void Teach (const uint64_t studentFacNum);

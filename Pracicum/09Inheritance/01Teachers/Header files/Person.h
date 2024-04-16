@@ -8,7 +8,9 @@
 class Person
 {
 
-// Interface
+public:
+    Person (const std::string name, const uint16_t age);
+
 public:
     std::string GetName() const;
     int GetAge() const;
@@ -18,7 +20,7 @@ public:
 
 protected:
     std::string fName;
-    uint64_t fAge;
+    uint16_t fAge;
 
 };
 
