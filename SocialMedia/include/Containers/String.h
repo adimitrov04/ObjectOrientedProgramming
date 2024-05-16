@@ -4,6 +4,7 @@
 #define __STRING_H__
 
 #include <iostream>
+#include <limits>
 #include <cstring>
 
 // TODO: Remove when Vector is implemented
@@ -43,16 +44,20 @@ public:
     //Vector &extract_words () const;
     void print (std::ostream& out = std::cout) const;
 
-    void cat (const String& other);
     void cat (const char* other);
-    void read (std::istream& in = std::cin);
+    void cat (const String& other);
+
+    void copy (const char* str);
+    void copy (const String& other);
     void clear ();
 
-private:
-    void copy (const String& other);
-    void copy (const char* other);
+    void read (std::istream& in = std::cin);
 
 private:
+
+private:
+    static const size_t MAX_BUFFER_LENGTH = 100000;
+
     size_t size;
     char* arr;
 

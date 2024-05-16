@@ -1,3 +1,5 @@
+#include <exception>
+
 #include "../../include/Containers/String.h"
 
 // -- Life cycle --
@@ -48,11 +50,6 @@ void String::print (std::ostream& out) const
 
 // -- Setters --
 
-void String::cat (const String& other)
-{
-    cat(other.c_str());
-}
-
 void String::cat (const char* other)
 {
     size_t newSize = this->size + strlen(other);
@@ -61,14 +58,68 @@ void String::cat (const char* other)
     strcpy(buffer, this->c_str());
     strcat(buffer, other);
 
-    clear();
-    arr = buffer;
-    size = newSize;
+    try
+    {
+        copy(buffer);
+    }
+    catch (...)
+    {
+        delete[] buffer;
+        throw;
+    }
+
+    delete[] buffer;
+}
+
+void String::cat (const String& other)
+{
+    cat(other.c_str());
 }
 
 void String::read (std::istream& in)
 {
+    char* buffer = new char[MAX_BUFFER_LENGTH];
+    
+    in >> buffer;
+    if (in.good() == false)
+    {
+        in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        in.clear();
 
+        delete[] buffer;
+
+        throw std::length_error("String.read: Exceeded maximum buffer length.");
+    }
+
+    try
+    {
+        copy(buffer);
+    }
+    catch (...)
+    {
+        delete[] buffer;
+        throw;
+    }
+
+    delete[] buffer;
+}
+
+void String::copy (const char* str)
+{
+    char* buffer = new char[strlen(str) + 1];
+    
+    if (arr)
+        clear();
+
+    strcpy(buffer, str);
+
+    arr = buffer;
+    size = strlen(str) + 1;
+}
+
+void String::copy (const String& other)
+{
+    copy(other.c_str());
 }
 
 void String::clear ()
