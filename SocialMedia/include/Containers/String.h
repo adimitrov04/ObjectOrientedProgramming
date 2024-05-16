@@ -43,8 +43,8 @@ public:
     //Vector &extract_words () const;
     void print (std::ostream& out = std::cout) const;
 
-    String& cat (const String& other);
-    String& cat (const char* other);
+    void cat (const String& other);
+    void cat (const char* other);
     void read (std::istream& in = std::cin);
     void clear ();
 

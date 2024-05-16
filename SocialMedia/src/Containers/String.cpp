@@ -1,4 +1,4 @@
-#include "../include/Containers/String.h"
+#include "../../include/Containers/String.h"
 
 // -- Life cycle --
 
@@ -47,6 +47,29 @@ void String::print (std::ostream& out) const
 }
 
 // -- Setters --
+
+void String::cat (const String& other)
+{
+    cat(other.c_str());
+}
+
+void String::cat (const char* other)
+{
+    size_t newSize = this->size + strlen(other);
+    char* buffer = new char[newSize];
+
+    strcpy(buffer, this->c_str());
+    strcat(buffer, other);
+
+    clear();
+    arr = buffer;
+    size = newSize;
+}
+
+void String::read (std::istream& in)
+{
+
+}
 
 void String::clear ()
 {
