@@ -44,6 +44,40 @@ String& String::operator= (const char* str)
     return *this;
 }
 
+String& String::operator+ (const String& other)
+{
+    this->cat(other);
+
+    return *this;
+}
+
+String& String::operator+ (const char* str)
+{
+    this->cat(str);
+
+    return *this;
+}
+
+const bool String::operator== (const String& other) const
+{
+    return strcmp(this->c_str(), other.c_str()) ? false : true;
+}
+
+const bool String::operator== (const char* str) const
+{
+    return strcmp(this->c_str(), str) ? false : true;
+}
+
+// -- Casts --
+
+String::operator char*() const
+{
+    char* output = new char[this->size];
+    strcpy(output, this->c_str());
+
+    return output;
+}
+
 // -- Getters --
 
 const size_t String::get_length () const
