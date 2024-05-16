@@ -25,7 +25,7 @@ public:
 public:
     const size_t size () const;
     const size_t capacity () const;
-    T& at (const size_t index) const;
+    T* at (const size_t index) const;
     void print (std::ostream& out = std::cout) const;
     
     void push_back (const T element);
@@ -36,9 +36,11 @@ public:
     void read (std::istream& in = std::cin);
     void clear ();
 
+private:
+    void copy (const Vector<class T> &other);
 
 private:
-    size_t capacity;
+    size_t f_capacity;
     size_t f_size;
 
     T* arr;
