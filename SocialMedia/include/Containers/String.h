@@ -39,12 +39,12 @@ public:
 
 public:
     const size_t get_length () const;
-    char* c_str () const;
-    Vector &extract_words () const;
+    const char* c_str () const;
+    //Vector &extract_words () const;
     void print (std::ostream& out = std::cout) const;
 
-    String& concatenate (const String& other);
-    String& concatenate (const char* other);
+    String& cat (const String& other);
+    String& cat (const char* other);
     void read (std::istream& in = std::cin);
     void clear ();
 
