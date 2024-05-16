@@ -2,6 +2,77 @@
 
 #include "../../include/Containers/String.h"
 
+// TODO: Remove once Vector is implemented
+#include <vector>
+using Vector = std::vector<String>;
+
+// -- Static functions --
+
+const bool isnewline (const char ch)
+{
+    if (ch == '\r' || ch == '\n')
+        return true;
+
+    return false;
+}
+
+void copyWord (char* dest, const char* &src)
+{
+    while (*src && !isspace(*src) && !isnewline(*src))
+    {
+        *dest = *src;
+
+        src++;
+        dest++;
+    }
+
+    *dest = '\0';
+}
+
+const size_t getCurrentWordLength (const char* word)
+{
+    size_t wordSize = 0;
+
+    while (*word && !isspace(*word) && !isnewline(*word))
+    {
+        wordSize++;
+        word++;
+    }
+
+    return wordSize;
+}
+
+const char* findNextWord (const char* currentPos)
+{
+    const char* iterator = currentPos;
+
+    if (!iterator)
+        return nullptr;
+
+    while (*iterator && (isspace(*iterator) || isnewline(*iterator)))
+        iterator++;
+
+    if (*iterator == '\0')
+        return nullptr;
+
+    return iterator;
+}
+
+String getCurrentWordInString (const char* &word)
+{
+    if (getCurrentWordLength(word) == 0)
+        throw std::out_of_range("String.getCurrentWordInString: no words left to extract");
+
+    char* buffer = new char[getCurrentWordLength(word) + 1];
+
+    copyWord(buffer, word);
+
+    String output(buffer);
+
+    delete[] buffer;
+    return output;
+}
+
 // -- Life cycle --
 
 String::String()
@@ -103,6 +174,24 @@ const char* String::c_str () const
 {
     return arr;
 }
+
+Vector String::extract_words () const
+{
+    Vector outputVector;
+
+    const char* iterator = findNextWord(arr);
+    
+    while (iterator)
+    {
+        String currentWord = getCurrentWordInString(iterator);
+        outputVector.push_back(currentWord);
+
+        iterator = findNextWord(iterator);
+    }
+
+    return outputVector;
+}
+
 
 void String::print (std::ostream& out) const
 {

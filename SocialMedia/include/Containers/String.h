@@ -4,7 +4,6 @@
 #define __STRING_H__
 
 #include <iostream>
-#include <limits>
 #include <cstring>
 
 // TODO: Remove when Vector is implemented
@@ -19,7 +18,6 @@ class String
 using Vector = std::vector<String>;
 
 public:
-    // TODO: Implement deleted functions
     String ();
     String (const String& other);
     String (const char* other);
@@ -43,7 +41,7 @@ public:
 public:
     const size_t get_length () const;
     const char* c_str () const;
-    //Vector &extract_words () const;
+    Vector extract_words () const;
     void print (std::ostream& out = std::cout) const;
 
     void cat (const char* other);
@@ -56,6 +54,13 @@ public:
     void read (std::istream& in = std::cin);
 
 private:
+/*
+    const char* findNextWord (const char* currentPosition);
+    String getCurrentWordInString (const char* word);
+    const size_t getCurrentWordLength (const char* word);
+
+    const bool isnewline (const char ch);
+*/
 
 private:
     static const size_t MAX_BUFFER_LENGTH = 100000;
