@@ -68,6 +68,20 @@ const bool String::operator== (const char* str) const
     return strcmp(this->c_str(), str) ? false : true;
 }
 
+std::ostream& operator<< (std::ostream& out, const String& str)
+{
+    out << str.c_str();
+
+    return out;
+}
+
+std::istream& operator>> (std::istream& in, String& str)
+{
+    str.read(in);
+
+    return in;
+}
+
 // -- Casts --
 
 String::operator char*() const

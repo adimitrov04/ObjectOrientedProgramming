@@ -33,8 +33,8 @@ public:
     const bool operator== (const String& other) const;
     const bool operator== (const char* str) const;
 
-    std::ostream& operator<< (std::ostream& out) const = delete;
-    std::ostream& operator>> (std::istream& in) = delete;
+    friend std::ostream& operator<< (std::ostream& out, const String& str);
+    friend std::istream& operator>> (std::istream& in, String& str);
 
     explicit operator char*() const;
 
