@@ -32,10 +32,14 @@ String::~String()
 String& String::operator= (const String& other)
 {
     if (this != &other)
-    {
-        clear();
         copy(other);
-    }
+
+    return *this;
+}
+
+String& String::operator= (const char* str)
+{
+    copy(str);
 
     return *this;
 }
@@ -54,6 +58,9 @@ const char* String::c_str () const
 
 void String::print (std::ostream& out) const
 {
+    if (arr == nullptr)
+        throw std::length_error("String.print: Cannot print empty string");
+
     out << arr;
 }
 
@@ -115,6 +122,9 @@ void String::read (std::istream& in)
 
 void String::copy (const char* str)
 {
+    if (str == nullptr)
+        throw std::invalid_argument("String.copy: Cannot copy from nullptr");
+
     char* buffer = new char[strlen(str) + 1];
     
     if (arr)
