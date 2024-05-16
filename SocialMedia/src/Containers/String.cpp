@@ -29,7 +29,16 @@ String::~String()
 
 // -- Operators --
 
+String& String::operator= (const String& other)
+{
+    if (this != &other)
+    {
+        clear();
+        copy(other);
+    }
 
+    return *this;
+}
 
 // -- Getters --
 
@@ -80,7 +89,7 @@ void String::read (std::istream& in)
 {
     char* buffer = new char[MAX_BUFFER_LENGTH];
     
-    in >> buffer;
+    in.getline(buffer, MAX_BUFFER_LENGTH);
     if (in.good() == false)
     {
         in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');

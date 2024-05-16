@@ -34,6 +34,8 @@ public:
     std::ostream& operator<< (std::ostream& out) const = delete;
     std::ostream& operator>> (std::istream& in) = delete;
 
+    explicit operator char*() const;
+
     const bool operator== (const char* other) = delete;
 
     ~String();
