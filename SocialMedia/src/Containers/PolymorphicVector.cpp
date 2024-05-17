@@ -37,6 +37,21 @@ ICloneable* PolymorphicVector::at (const size_t index) const
 
 // -- Setters --
 
+void PolymorphicVector::push_back (ICloneable* element)
+{
+    vec.push_back(element);
+}
+
+void PolymorphicVector::pop_back ()
+{
+    vec.pop_back();
+}
+
+void PolymorphicVector::reserve (const size_t capacity)
+{
+    vec.reserve(capacity);
+}
+
 void PolymorphicVector::copy (const PolymorphicVector& other)
 {
     try

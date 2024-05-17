@@ -11,11 +11,12 @@
 //#include "Vector.h"
 #include "ICloneable.h"
 
+//template <class T>
 class PolymorphicVector
 {
 
 // TODO: Remove when STD Containers are implemented
-// This is kind of dumb because you can put many cloneable objects of different base classes in here,
+// This is bad because you can put cloneable objects of different base classes in here,
 // template it later to restrict type of base class
 using Vector = std::vector<ICloneable*>;
 
@@ -32,9 +33,9 @@ public:
     const size_t capacity () const;
     ICloneable* at (const size_t index) const;
     
-    void push_back (const ICloneable* element);
+    void push_back (ICloneable* element);
     void pop_back ();
-    void pop (const size_t index);
+    //void pop (const size_t index);
     void reserve (const size_t capacity);
 
     void clear ();
