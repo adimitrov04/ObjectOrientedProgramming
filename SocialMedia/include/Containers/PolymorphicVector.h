@@ -5,21 +5,19 @@
 
 #include <iostream>
 
-// TODO: Remove when STD Containers are implemented
+// TODO: Remove when Vector is implemented
 #include <vector>
 
 //#include "Vector.h"
-#include "../Commands/Command.h"
+#include "ICloneable.h"
 
-//template <class T>
-
-//TODO: Make template later
-//Right now PolymorphicVector only works with containing Command child classes
 class PolymorphicVector
 {
 
 // TODO: Remove when STD Containers are implemented
-using Vector = std::vector<Command*>;
+// This is kind of dumb because you can put many cloneable objects of different base classes in here,
+// template it later to restrict type of base class
+using Vector = std::vector<ICloneable*>;
 
 public:
     PolymorphicVector ();
@@ -32,12 +30,12 @@ public:
 public:
     const size_t size () const;
     const size_t capacity () const;
-    Command* at (const size_t index) const;
+    ICloneable* at (const size_t index) const;
     
-    void push_back (const Command* element);
+    void push_back (const ICloneable* element);
     void pop_back ();
     void pop (const size_t index);
-    //void ensure_capacity (const size_t capacity);
+    void reserve (const size_t capacity);
 
     void clear ();
 
@@ -45,7 +43,7 @@ private:
     void copy (const PolymorphicVector& other);
 
 private:
-    Vector arr;
+    Vector vec;
 
 };
 
