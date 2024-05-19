@@ -6,6 +6,10 @@
 #include <iostream>
 #include <exception>
 
+// Virutal methods in this class template are not needed right now,
+// but I'm not sure if I wont change the architecture later so that
+// PMVector inherits this, so I'll leave it like this for now
+
 template <class T>
 class Vector
 {
@@ -35,11 +39,18 @@ public:
         return *this;
     }
     
-    T& operator[] (const size_t index) const
+    T& operator[] (const size_t index)
     {
         return arr[index];
     }
 
+    const T& operator[] (const size_t index) const
+    {
+        return arr[index];
+    }
+
+    // Omitted for now
+    /*
     friend std::ostream& operator<< (std::ostream& out, const Vector<T> &vec)
     {
         vec.print(out);
@@ -56,6 +67,7 @@ public:
 
         return in;
     }
+    */
 
     virtual ~Vector ()
     {
@@ -81,6 +93,8 @@ public:
         return arr[index];
     }
 
+    // Omitted for now for PMVector to work
+    /*
     virtual void print (std::ostream& out = std::cout) const
     {
         for (int i = 0; i < size(); i++)
@@ -88,6 +102,7 @@ public:
 
         out << '\n';
     }
+    */
     
     virtual void push_back (const T& element)
     {
@@ -103,7 +118,7 @@ public:
 
     virtual void pop_back ()
     {
-        if (size())
+        if (size() > 0)
             f_size--;
     }
 
@@ -137,6 +152,8 @@ public:
         f_capacity = capacity;
     }
 
+    // Omitted for now for PMVector to work
+    /*
     virtual void read (const size_t count, std::istream& in = std::cin)
     {
         if (this->size() > 0)
@@ -153,6 +170,7 @@ public:
             push_back(addNew);
         }
     }
+    */
 
     virtual void clear ()
     {
