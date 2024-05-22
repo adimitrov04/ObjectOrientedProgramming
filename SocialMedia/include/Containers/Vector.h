@@ -4,37 +4,56 @@
 #define __VECTOR_H__
 
 #include <iostream>
-#include <exception>
+#include <stdexcept>
 
-// Virutal methods in this class template are not needed right now,
-// but I'm not sure if I wont change the architecture later so that
-// PMVector inherits this, so I'll leave it like this for now
-
-template <class T>
+template <typename T>
 class Vector
 {
 
 public:
-    Vector ()
+    Vector()
     : f_capacity(0), f_size(0), arr(nullptr)
     {}
 
-    Vector (const size_t startingCapacity)
+    Vector(const size_t starting_capacity)
     : Vector<T>()
     {
-        reserve(startingCapacity);
+        reserve(starting_capacity);
     }
 
-    Vector (const Vector<T> &other)
+    Vector(const Vector<T> &other)
     : Vector<T>()
     {
         copy(other);
     }
 
-    Vector<T>& operator= (const Vector& other)
+    ~Vector()
+    {
+        delete[] arr;
+    }
+
+public:
+    Vector<T> &operator=(const Vector& other)
+    {
+        if (this != other)
+            copy(other);
+
+        return *this;
+    }
+
+    Vector<T> &operator=(const Vector&& other)
     {
         if (this != &other)
-            copy(other);
+        {
+            if (this->arr)
+                clear();
+
+            this->arr = other.arr();
+            other.arr = nullptr;
+
+            f_capacity = other.capacity();
+            f_size = other.size();
+        }
 
         return *this;
     }
@@ -49,8 +68,6 @@ public:
         return arr[index];
     }
 
-    // Omitted for now
-    /*
     friend std::ostream& operator<< (std::ostream& out, const Vector<T> &vec)
     {
         vec.print(out);
@@ -60,18 +77,11 @@ public:
 
     friend std::istream& operator>> (std::istream& in, Vector<T> &vec)
     {
-        size_t count = 0;
+        size_t count(0);
         in >> count;
-
         vec.read(count, in);
 
         return in;
-    }
-    */
-
-    virtual ~Vector ()
-    {
-        clear();
     }
 
 public:
@@ -79,129 +89,115 @@ public:
     {
         return f_size;
     }
-
+    
     const size_t capacity () const
     {
         return f_capacity;
     }
 
-    T& at (const size_t index) const
+    T& at (const size_t index)
     {
-        if (index >= size() || index < 0)
-            throw std::range_error("Vector.at: given index outside of vector");
+        if (index < 0 || index >= size())
+            throw std::invalid_argument("Vector.at: Given index outside of vector.");
 
         return arr[index];
     }
 
-    // Omitted for now for PMVector to work
-    /*
-    virtual void print (std::ostream& out = std::cout) const
+    const T& at (const size_t index) const
     {
-        for (int i = 0; i < size(); i++)
-            out << arr[i] << ' ';
+        if (index < 0 || index >= size())
+            throw std::invalid_argument("Vector.at: Given index outside of vector.");
 
-        out << '\n';
+        return arr[index];
     }
-    */
     
-    virtual void push_back (const T& element)
+    void print (std::ostream& out = std::cout) const
+    {
+        for (size_t i = 0; i < size(); i++)
+        {
+            out << arr[i] << ' ';
+        }
+    }
+    
+    void push_back (const T& element)
     {
         if (capacity() == 0)
             reserve(DEFAULT_STARTING_CAPACITY);
-        
-        if (size() == capacity())
-            reserve(capacity() * 2);
 
-        arr[size()] = element;
+        if (size() == capacity())
+            reserve(f_capacity * 2);
+        
+        arr[f_size] = element;
         f_size++;
     }
 
-    virtual void pop_back ()
+    void pop_back ()
     {
-        if (size() > 0)
-            f_size--;
-    }
-
-    virtual void pop (const size_t index)
-    {
-        for (int i = index; i < (size() - 1); i++)
-        {
-            at(i) = arr[i + 1];
-        }
+        f_size--;
     }
 
     void reserve (const size_t capacity)
     {
-        if (capacity == 0)
-            clear();
-
         if (capacity <= this->capacity())
             return;
-        
-        T* buffer = new T[capacity];
 
-        for (size_t i = 0; i < size(); i++)
+        T* buffer = new T[capacity];
+        try
         {
-            buffer[i] = arr[i];
+            for (size_t i = 0; i < size(); i++)
+                buffer[i] = arr[i];
+        }
+        catch (...)
+        {
+            delete[] buffer;
+            throw;
         }
 
-        if (arr)
-            delete[] arr;
-        
+        delete[] arr;
         arr = buffer;
         f_capacity = capacity;
     }
 
-    // Omitted for now for PMVector to work
-    /*
-    virtual void read (const size_t count, std::istream& in = std::cin)
+    void read (const size_t count, std::istream& in = std::cin)
     {
-        if (this->size() > 0)
-            clear();
-
-        if (count > capacity())
-            reserve(count);
-
         for (size_t i = 0; i < count; i++)
         {
-            T addNew;
-            in >> addNew;
+            T temp;
+            in >> temp;
 
-            push_back(addNew);
+            push_back(temp);
         }
     }
-    */
 
-    virtual void clear ()
+    void clear () noexcept
     {
         delete[] arr;
-        arr = nullptr;
-
-        f_size = 0;
         f_capacity = 0;
+        f_size = 0;
     }
 
-protected:
-    // This method leaves vector empty if it cannot reserve the necessary memory for copy. Fix later.
-    virtual void copy (const Vector<T> &other)
+private:
+    void copy (const Vector<T> &other)
     {
-        clear();
-        reserve(other.capacity());
+        Vector<T> buffer;
+        buffer.reserve(other.capacity());
+        
+        for (size_t i = 0; i < other.f_size; i++)
+            buffer.push_back(other[i]);
 
-        for (size_t i = 0; i < other.size(); i++)
-        {
-            push_back(other[i]);
-        }
+        this->clear();
+        this->arr = buffer.arr;
+        f_capacity = buffer.capacity();
+        f_size = buffer.size();
     }
 
-protected:
+private:
+    static const size_t DEFAULT_STARTING_CAPACITY = 4;
+    
     size_t f_capacity;
     size_t f_size;
 
     T* arr;
-
-private:
-    static const size_t DEFAULT_STARTING_CAPACITY = 4;
 
 };
 

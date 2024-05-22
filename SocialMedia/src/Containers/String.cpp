@@ -1,14 +1,12 @@
-#include <exception>
+#include <stdexcept>
 
 #include "../../include/Containers/String.h"
 
-// TODO: Remove once Vector is implemented
-#include <vector>
-using Vector = std::vector<String>;
-
 // -- Static functions --
 
-const bool isnewline (const char ch)
+using namespace string_utils;
+
+const bool string_utils::isnewline (const char ch)
 {
     if (ch == '\r' || ch == '\n')
         return true;
@@ -16,7 +14,7 @@ const bool isnewline (const char ch)
     return false;
 }
 
-void copyWord (char* dest, const char* &src)
+void string_utils::copyWord (char* dest, const char* &src)
 {
     while (*src && !isspace(*src) && !isnewline(*src))
     {
@@ -29,7 +27,7 @@ void copyWord (char* dest, const char* &src)
     *dest = '\0';
 }
 
-const size_t getCurrentWordLength (const char* word)
+const size_t string_utils::getCurrentWordLength (const char* word)
 {
     size_t wordSize = 0;
 
@@ -42,7 +40,7 @@ const size_t getCurrentWordLength (const char* word)
     return wordSize;
 }
 
-const char* findNextWord (const char* currentPos)
+const char* string_utils::findNextWord (const char* currentPos)
 {
     const char* iterator = currentPos;
 
@@ -58,7 +56,7 @@ const char* findNextWord (const char* currentPos)
     return iterator;
 }
 
-String getCurrentWordInString (const char* &word)
+String string_utils::getCurrentWordInString (const char* &word)
 {
     if (getCurrentWordLength(word) == 0)
         throw std::out_of_range("String.getCurrentWordInString: no words left to extract");
@@ -67,10 +65,18 @@ String getCurrentWordInString (const char* &word)
 
     copyWord(buffer, word);
 
-    String output(buffer);
+    try
+    {
+        String output(buffer);
 
-    delete[] buffer;
-    return output;
+        delete[] buffer;
+        return output;
+    }
+    catch (...)
+    {
+        delete[] buffer;
+        throw;
+    }
 }
 
 // -- Life cycle --
@@ -104,6 +110,22 @@ String& String::operator= (const String& other)
 {
     if (this != &other)
         copy(other);
+
+    return *this;
+}
+
+String& String::operator= (String&& other)
+{
+    if (this != &other)
+    {
+        if (arr)
+            clear();
+
+        arr = other.arr;
+        other.arr = nullptr;
+
+        this->size = strlen(arr) + 1;
+    }
 
     return *this;
 }
@@ -175,9 +197,9 @@ const char* String::c_str () const
     return arr;
 }
 
-Vector String::extract_words () const
+Vector<String> String::extract_words () const
 {
-    Vector outputVector;
+    Vector<String> outputVector;
 
     const char* iterator = findNextWord(arr);
     
@@ -196,7 +218,7 @@ Vector String::extract_words () const
 void String::print (std::ostream& out) const
 {
     if (arr == nullptr)
-        throw std::length_error("String.print: Cannot print empty string");
+        out << "null";
 
     out << arr;
 }
@@ -278,7 +300,7 @@ void String::copy (const String& other)
     copy(other.c_str());
 }
 
-void String::clear ()
+void String::clear () noexcept
 {
     delete[] arr;
     size = 0;
