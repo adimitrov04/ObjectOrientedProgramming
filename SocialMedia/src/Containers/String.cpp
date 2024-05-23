@@ -113,7 +113,7 @@ String& String::operator= (const String& other)
 
     return *this;
 }
-
+/*
 String& String::operator= (String&& other)
 {
     if (this != &other)
@@ -129,6 +129,7 @@ String& String::operator= (String&& other)
 
     return *this;
 }
+*/
 
 String& String::operator= (const char* str)
 {
@@ -258,6 +259,9 @@ void String::read (std::istream& in)
     in.getline(buffer, MAX_BUFFER_LENGTH);
     if (in.good() == false)
     {
+        if (in.eof())
+            return;
+
         in.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         in.clear();
 

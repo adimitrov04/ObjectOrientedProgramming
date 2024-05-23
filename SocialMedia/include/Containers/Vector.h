@@ -45,10 +45,7 @@ public:
     {
         if (this != &other)
         {
-            if (this->arr)
-                clear();
-
-            this->arr = other.arr();
+            this->arr = other.arr;
             other.arr = nullptr;
 
             f_capacity = other.capacity();
@@ -97,6 +94,9 @@ public:
 
     T& at (const size_t index)
     {
+        if (size() == 0 || arr == nullptr)
+            throw std::logic_error("Vector.at: Array is empty.");
+        
         if (index < 0 || index >= size())
             throw std::invalid_argument("Vector.at: Given index outside of vector.");
 
@@ -105,6 +105,9 @@ public:
 
     const T& at (const size_t index) const
     {
+        if (size() == 0 || arr == nullptr)
+            throw std::logic_error("Vector.at: Array is empty.");
+        
         if (index < 0 || index >= size())
             throw std::invalid_argument("Vector.at: Given index outside of vector.");
 
@@ -142,6 +145,7 @@ public:
             return;
 
         T* buffer = new T[capacity];
+
         try
         {
             for (size_t i = 0; i < size(); i++)
@@ -169,6 +173,25 @@ public:
         }
     }
 
+    void append (const Vector<T> &other)
+    {
+        if (other.size() == 0)
+            return;
+        
+        if (size() == 0)
+        {
+            copy(other);
+            return;
+        }
+
+        reserve(this->size() + other.size());
+
+        for (size_t i = 0; i < other.size(); i++)
+        {
+            push_back(other[i]);
+        }
+    }
+
     void clear () noexcept
     {
         delete[] arr;
@@ -187,6 +210,8 @@ private:
 
         this->clear();
         this->arr = buffer.arr;
+        buffer.arr = nullptr;
+
         f_capacity = buffer.capacity();
         f_size = buffer.size();
     }
