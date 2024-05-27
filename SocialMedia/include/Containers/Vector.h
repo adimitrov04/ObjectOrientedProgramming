@@ -21,6 +21,16 @@ public:
         reserve(starting_capacity);
     }
 
+    Vector(Vector<T> &&other)
+    : Vector<T>()
+    {
+        this->arr = other.arr;
+        other.arr = nullptr;
+
+        this->f_capacity = other.capacity();
+        this->f_size = other.size();
+    }
+
     Vector(const Vector<T> &other)
     : Vector<T>()
     {
@@ -41,7 +51,7 @@ public:
         return *this;
     }
 
-    Vector<T> &operator=(const Vector&& other)
+    Vector<T> &operator=(Vector&& other)
     {
         if (this != &other)
         {
