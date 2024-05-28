@@ -55,6 +55,7 @@ class Configuration
 {
 
 public:
+    // Made this static because I dont see how I would access a friend function outside of its class
     static Configuration* create_configuration ()
     {
         static Configuration* instance = new Configuration;
