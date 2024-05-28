@@ -9,20 +9,31 @@
 
 int main ()
 {
-    Configuration* config = Configuration::create_configuration();
-    if (config == nullptr)
+    try
+    {
+        Configuration* config = Configuration::create_configuration();
+        if (config == nullptr)
+            return -1;
+
+        std::cout << config << std::endl;
+
+        std::string outputFileName;
+        
+        std::cout << "Enter file name to save config info in: ";
+        std::cin >> outputFileName;
+
+        std::ofstream outFile(outputFileName);
+        outFile << config;
+        
+        outFile.close();
+        delete config;
+    }
+    catch (const std::bad_alloc&)
+    // Only catch bad alloc because no other exception can be thrown by main as it currently is
+    {
+        std::cerr << "bad alloc... terminating.\n";
         return -1;
-
-    std::cout << config << std::endl;
-
-    std::string outputFileName;
-    
-    std::cout << "Enter file name to save config info in: ";
-    std::cin >> outputFileName;
-
-    std::ofstream outFile(outputFileName);
-    outFile << config;
-    outFile.close();
+    }
     
     return 0;
 }
