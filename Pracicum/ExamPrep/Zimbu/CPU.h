@@ -9,7 +9,7 @@
 
 #include "Component.h"
 
-class CPU : public Component
+class CPU : public virtual Component
 {
 
 public:
@@ -40,6 +40,7 @@ public:
 private:
     static constexpr double PRICE_PER_CORE = 29.99;
 
+protected:
     const unsigned short numberOfCores;
     const unsigned short clockSpeed;
 

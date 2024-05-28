@@ -13,6 +13,7 @@
 #include "Component.h"
 #include "CPU.h"
 #include "Memory.h"
+#include "GPU.h"
 
 const Component* create_component (std::istream& in = std::cin)
 {
@@ -38,6 +39,15 @@ const Component* create_component (std::istream& in = std::cin)
                 throw std::invalid_argument("ERROR: Incorrect input.");
 
             return new Memory(setCap);
+        }
+        else if (label == "GPU" || label == "gpu")
+        {
+            unsigned short setCores(0), setSpeed(0), setCap(0);
+            in >> setCores >> setSpeed >> setCap;
+            if (!in)
+                throw std::invalid_argument("ERROR: Incorrect input.");
+
+            return new GPU(setCores, setSpeed, setCap);
         }
         else
         {

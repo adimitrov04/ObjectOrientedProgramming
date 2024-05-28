@@ -8,7 +8,7 @@
 
 #include "Component.h"
 
-class Memory : public Component
+class Memory : public virtual Component
 {
 
 public:
@@ -37,6 +37,7 @@ public:
 private:
     static constexpr double PRICE_PER_GIGABYTE = 89.99;
 
+protected:
     const unsigned short capacity;
 
 };

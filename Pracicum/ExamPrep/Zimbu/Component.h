@@ -9,7 +9,8 @@
 enum ComponentType
 {
     tCPU,
-    tMemory
+    tMemory,
+    tGPU
 };
 
 class Component
@@ -33,7 +34,7 @@ public:
     }
 
 public:
-    static const int NUMBER_OF_COMPONENT_TYPES = 2;
+    static const int NUMBER_OF_COMPONENT_TYPES = 3;
 
 private:
     const std::string label;
